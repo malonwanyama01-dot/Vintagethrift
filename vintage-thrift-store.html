@@ -1,0 +1,1462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vintage Thrift Store</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,300;1,400;1,600&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink:        #1C1008;
+  --espresso:   #2E1A0E;
+  --mahogany:   #5C2E0E;
+  --rust:       #A84B22;
+  --amber:      #C87941;
+  --gold:       #D4A855;
+  --parchment:  #F5EDD8;
+  --linen:      #EDE3CC;
+  --cream:      #FAF5EA;
+  --fog:        #F0E8D5;
+  --sage:       #7A8C6A;
+  --sage-lt:    #EBF0E4;
+  --white:      #FFFDF6;
+  --shadow-warm: rgba(92,46,14,0.18);
+  --shadow-deep: rgba(28,16,8,0.35);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Jost', sans-serif;
+  background: var(--cream);
+  color: var(--ink);
+  overflow-x: hidden;
+}
+
+/* Grain overlay */
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none; z-index: 9999; opacity: 0.6;
+}
+
+.serif { font-family: 'Cormorant Garamond', serif; }
+.eyebrow {
+  font-family: 'Jost', sans-serif;
+  font-size: 10px; font-weight: 600;
+  letter-spacing: 0.22em; text-transform: uppercase; color: var(--amber);
+}
+
+/* ── NAV ── */
+nav {
+  position: sticky; top: 0; z-index: 500;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 48px; height: 68px;
+  background: var(--espresso);
+  border-bottom: 1px solid rgba(212,168,85,0.2);
+  box-shadow: 0 4px 32px var(--shadow-deep);
+}
+.nav-logo {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 22px; font-weight: 700; color: var(--parchment);
+  letter-spacing: 0.04em; line-height: 1; text-decoration: none;
+}
+.nav-logo::after {
+  content: 'Est. — Curated Pre-Loved Clothing · #SWAG';
+  display: block; font-family: 'Jost', sans-serif;
+  font-size: 7.5px; font-weight: 500; letter-spacing: 0.2em;
+  text-transform: uppercase; color: var(--gold); opacity: 0.7; margin-top: 3px;
+}
+.nav-links { display: flex; gap: 32px; }
+.nav-links a {
+  font-size: 11.5px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase;
+  color: rgba(245,237,216,0.65); text-decoration: none; cursor: pointer;
+  transition: color 0.25s; position: relative; padding-bottom: 2px;
+}
+.nav-links a::after {
+  content: ''; position: absolute; bottom: 0; left: 0;
+  width: 0; height: 1px; background: var(--gold); transition: width 0.3s ease;
+}
+.nav-links a:hover { color: var(--gold); }
+.nav-links a:hover::after { width: 100%; }
+.nav-links a.sale { color: var(--amber); }
+.nav-right { display: flex; gap: 12px; align-items: center; }
+.nav-icon {
+  width: 36px; height: 36px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--parchment); font-size: 16px; cursor: pointer;
+  transition: background 0.2s; border: 1px solid transparent;
+}
+.nav-icon:hover { background: rgba(212,168,85,0.15); border-color: rgba(212,168,85,0.3); }
+.nav-cart-btn {
+  display: flex; align-items: center; gap: 8px;
+  background: linear-gradient(135deg, var(--rust), var(--mahogany));
+  color: var(--parchment); border: none;
+  padding: 9px 20px 9px 16px; border-radius: 3px;
+  font-family: 'Jost', sans-serif; font-size: 12px; font-weight: 600;
+  letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer;
+  transition: all 0.25s; box-shadow: 0 2px 12px rgba(168,75,34,0.4);
+}
+.nav-cart-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(168,75,34,0.5); }
+.cart-badge {
+  background: var(--gold); color: var(--espresso);
+  width: 18px; height: 18px; border-radius: 50%;
+  font-size: 10px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+}
+
+/* ── HERO ── */
+.hero {
+  display: grid; grid-template-columns: 1fr 1fr;
+  min-height: 560px; background: var(--espresso);
+  position: relative; overflow: hidden;
+}
+.hero::before {
+  content: ''; position: absolute;
+  width: 700px; height: 700px; border-radius: 50%;
+  border: 1px solid rgba(212,168,85,0.1);
+  top: -200px; left: -100px; pointer-events: none;
+}
+.hero-left {
+  padding: 72px 56px 72px 48px;
+  display: flex; flex-direction: column; justify-content: center;
+  position: relative; z-index: 2;
+}
+.hero-tag {
+  display: inline-flex; align-items: center; gap: 8px;
+  border: 1px solid rgba(212,168,85,0.35); border-radius: 2px;
+  padding: 7px 14px; margin-bottom: 28px; width: fit-content;
+  background: rgba(212,168,85,0.08); backdrop-filter: blur(4px);
+  animation: fadeSlideDown 0.7s ease both;
+}
+.hero-tag-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--gold); animation: pulse 2s ease infinite;
+}
+@keyframes pulse {
+  0%,100% { opacity:1; transform:scale(1); }
+  50% { opacity:0.4; transform:scale(0.7); }
+}
+.hero-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 72px; font-weight: 700; line-height: 0.95;
+  color: var(--parchment); margin-bottom: 20px;
+  animation: fadeSlideUp 0.7s 0.1s ease both;
+}
+.hero-title em { font-style: italic; font-weight: 300; color: var(--gold); display: block; }
+.hero-sub {
+  font-size: 14px; font-weight: 300; color: rgba(245,237,216,0.6);
+  line-height: 1.75; margin-bottom: 40px; max-width: 340px;
+  animation: fadeSlideUp 0.7s 0.2s ease both;
+}
+.hero-ctas { display: flex; gap: 14px; align-items: center; animation: fadeSlideUp 0.7s 0.3s ease both; }
+.btn-hero-primary {
+  background: linear-gradient(135deg, var(--rust), var(--mahogany));
+  color: var(--parchment); border: none; padding: 16px 34px;
+  font-family: 'Jost', sans-serif; font-size: 12px; font-weight: 600;
+  letter-spacing: 0.12em; text-transform: uppercase; cursor: pointer;
+  border-radius: 2px; transition: all 0.3s;
+  box-shadow: 0 4px 24px rgba(168,75,34,0.45);
+}
+.btn-hero-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 36px rgba(168,75,34,0.55); }
+.btn-hero-secondary {
+  background: transparent; color: rgba(245,237,216,0.75); border: none; padding: 0;
+  font-family: 'Jost', sans-serif; font-size: 12px; font-weight: 500;
+  letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer;
+  display: flex; align-items: center; gap: 8px; transition: color 0.25s;
+}
+.btn-hero-secondary span { display:inline-block; transition: transform 0.25s; }
+.btn-hero-secondary:hover { color: var(--gold); }
+.btn-hero-secondary:hover span { transform: translateX(4px); }
+.hero-stats {
+  display: flex; gap: 36px; margin-top: 48px;
+  padding-top: 36px; border-top: 1px solid rgba(212,168,85,0.15);
+  animation: fadeSlideUp 0.7s 0.4s ease both;
+}
+.hero-stat-num {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 32px; font-weight: 700; color: var(--gold); line-height: 1; margin-bottom: 3px;
+}
+.hero-stat-label {
+  font-size: 10px; font-weight: 500; letter-spacing: 0.12em;
+  text-transform: uppercase; color: rgba(245,237,216,0.4);
+}
+
+/* Hero mosaic with REAL images */
+.hero-right {
+  display: grid; grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr; gap: 2px;
+  position: relative; z-index: 2;
+}
+.hero-tile {
+  position: relative; overflow: hidden; cursor: pointer;
+  display: flex; align-items: flex-end;
+}
+.hero-tile img {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: cover; object-position: center top;
+  transition: transform 0.5s ease;
+  filter: brightness(0.75) saturate(0.9);
+}
+.hero-tile:hover img { transform: scale(1.06); filter: brightness(0.85) saturate(1); }
+.hero-tile-label {
+  position: relative; z-index: 2; padding: 16px 18px;
+  background: linear-gradient(to top, rgba(28,16,8,0.9), transparent);
+  width: 100%;
+}
+.hero-tile-label strong {
+  display: block; font-family: 'Cormorant Garamond', serif;
+  font-size: 18px; font-weight: 700; color: var(--parchment); margin-bottom: 2px;
+}
+.hero-tile-label span {
+  font-size: 10px; font-weight: 500; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--gold); opacity: 0.85;
+}
+.hero-overlay-card {
+  position: absolute; bottom: 16px; right: 16px; z-index: 10;
+  background: rgba(250,245,234,0.95); backdrop-filter: blur(8px);
+  border-radius: 4px; padding: 12px 16px;
+  border: 1px solid rgba(212,168,85,0.3);
+  box-shadow: 0 8px 32px var(--shadow-deep);
+  animation: popIn 0.7s 0.6s cubic-bezier(0.34,1.56,0.64,1) both;
+}
+.hero-overlay-card .onum {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 28px; font-weight: 700; color: var(--rust); line-height: 1; margin-bottom: 2px;
+}
+.hero-overlay-card .olabel {
+  font-size: 9px; font-weight: 600; letter-spacing: 0.15em;
+  text-transform: uppercase; color: var(--espresso); opacity: 0.6;
+}
+
+/* ── TRUST BAR ── */
+.trust-bar {
+  background: var(--parchment);
+  border-bottom: 1px solid var(--linen);
+  padding: 0 48px; display: flex; align-items: stretch;
+}
+.trust-item {
+  flex: 1; display: flex; align-items: center; justify-content: center; gap: 10px;
+  padding: 18px 20px; border-right: 1px solid var(--linen);
+  transition: background 0.25s; cursor: default;
+}
+.trust-item:last-child { border-right: none; }
+.trust-item:hover { background: var(--linen); }
+.trust-icon { font-size: 20px; }
+.trust-text strong { display: block; font-size: 12px; font-weight: 600; color: var(--espresso); margin-bottom: 1px; }
+.trust-text span { font-size: 10.5px; color: rgba(46,26,14,0.5); }
+
+/* ── SECTIONS ── */
+.section { padding: 80px 48px; }
+.section-alt { background: var(--fog); }
+.section-head {
+  display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 48px;
+}
+.section-head-left { max-width: 480px; }
+.section-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 48px; font-weight: 700; color: var(--espresso);
+  line-height: 1; margin: 8px 0 10px;
+}
+.section-title em { font-style: italic; color: var(--rust); font-weight: 400; }
+.section-sub { font-size: 13px; color: rgba(46,26,14,0.55); line-height: 1.65; }
+.link-arrow {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--rust); cursor: pointer; text-decoration: none;
+  padding-bottom: 4px; border-bottom: 1px solid var(--amber);
+  transition: all 0.25s; white-space: nowrap;
+}
+.link-arrow .arr { transition: transform 0.25s; }
+.link-arrow:hover { color: var(--mahogany); }
+.link-arrow:hover .arr { transform: translateX(5px); }
+
+/* ── CATEGORIES with REAL images ── */
+.cat-grid {
+  display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px;
+}
+.cat-card {
+  position: relative; border-radius: 6px; overflow: hidden; cursor: pointer;
+  aspect-ratio: 3/4; display: flex; flex-direction: column;
+  align-items: center; justify-content: flex-end; padding: 20px 16px;
+  transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.35s;
+  box-shadow: 0 4px 20px var(--shadow-warm);
+}
+.cat-card img {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: cover; object-position: center top;
+  transition: transform 0.5s ease;
+  filter: brightness(0.65) saturate(0.85);
+}
+.cat-card::after {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(to top, rgba(28,16,8,0.85) 0%, rgba(28,16,8,0.1) 60%, transparent 100%);
+  z-index: 1;
+}
+.cat-card:hover { transform: translateY(-8px) scale(1.02); box-shadow: 0 20px 48px var(--shadow-deep); }
+.cat-card:hover img { transform: scale(1.08); filter: brightness(0.75) saturate(1); }
+.cat-info { position: relative; z-index: 2; text-align: center; }
+.cat-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 20px; font-weight: 700; color: var(--parchment);
+  margin-bottom: 3px; display: block;
+}
+.cat-count {
+  font-size: 10px; font-weight: 500; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--gold); opacity: 0.85;
+}
+
+/* ── FILTER CHIPS ── */
+.filter-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 36px; }
+.chip {
+  padding: 7px 18px; border-radius: 2px;
+  font-size: 11px; font-weight: 500; letter-spacing: 0.06em;
+  border: 1px solid var(--linen); background: var(--white);
+  color: rgba(46,26,14,0.6); cursor: pointer; transition: all 0.2s;
+}
+.chip:hover { border-color: var(--amber); color: var(--rust); background: rgba(168,75,34,0.04); }
+.chip.active { background: var(--espresso); color: var(--gold); border-color: var(--espresso); }
+
+/* ── PRODUCT GRID with REAL images ── */
+.product-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+.product-card {
+  background: var(--white); border-radius: 6px; overflow: hidden;
+  border: 1px solid var(--linen);
+  transition: all 0.35s cubic-bezier(0.25,0.46,0.45,0.94);
+  cursor: pointer; position: relative;
+}
+.product-card:hover { transform: translateY(-6px); box-shadow: 0 24px 56px var(--shadow-warm); border-color: #D4B896; }
+
+.product-img-zone {
+  position: relative; height: 240px; overflow: hidden;
+}
+.product-img-zone img {
+  width: 100%; height: 100%;
+  object-fit: cover; object-position: center top;
+  transition: transform 0.5s ease;
+  display: block;
+}
+.product-card:hover .product-img-zone img { transform: scale(1.07); }
+
+.product-badge {
+  position: absolute; top: 12px; left: 12px; z-index: 3;
+  font-size: 9px; font-weight: 700; letter-spacing: 0.1em;
+  text-transform: uppercase; padding: 4px 10px; border-radius: 2px;
+}
+.badge-new { background: var(--sage); color: white; }
+.badge-sale { background: var(--rust); color: white; }
+.badge-rare { background: var(--gold); color: var(--espresso); }
+
+.product-wish {
+  position: absolute; top: 10px; right: 10px; z-index: 3;
+  width: 32px; height: 32px; border-radius: 50%;
+  background: rgba(250,245,234,0.92); border: 1px solid rgba(255,255,255,0.5);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; cursor: pointer; transition: all 0.25s;
+  backdrop-filter: blur(4px);
+}
+.product-wish:hover { background: white; transform: scale(1.12); }
+
+.product-size-tag {
+  position: absolute; bottom: 10px; right: 10px; z-index: 3;
+  background: rgba(250,245,234,0.92); border: 1px solid rgba(255,255,255,0.5);
+  border-radius: 2px; font-size: 9.5px; font-weight: 700; letter-spacing: 0.06em;
+  color: var(--espresso); padding: 3px 9px;
+}
+
+.product-body { padding: 16px 16px 18px; }
+.product-era {
+  font-size: 9px; font-weight: 600; letter-spacing: 0.18em;
+  text-transform: uppercase; color: var(--amber); margin-bottom: 5px;
+}
+.product-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 17px; font-weight: 700; color: var(--espresso);
+  line-height: 1.2; margin-bottom: 5px;
+}
+.product-desc { font-size: 11px; color: rgba(46,26,14,0.5); line-height: 1.55; margin-bottom: 14px; }
+.product-footer-row { display: flex; align-items: center; justify-content: space-between; gap: 6px; }
+.product-prices { display: flex; align-items: baseline; gap: 7px; }
+.price-now {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 22px; font-weight: 700; color: var(--rust);
+}
+.price-was { font-size: 11px; color: rgba(46,26,14,0.35); text-decoration: line-through; }
+.btn-add {
+  background: var(--espresso); color: var(--parchment); border: none;
+  padding: 8px 16px; border-radius: 2px;
+  font-family: 'Jost', sans-serif; font-size: 10.5px; font-weight: 600;
+  letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer;
+  transition: all 0.25s; white-space: nowrap;
+}
+.btn-add:hover { background: var(--rust); transform: translateY(-1px); box-shadow: 0 4px 14px rgba(168,75,34,0.4); }
+
+/* ── PROMO BANNER ── */
+.promo-banner {
+  margin: 0 48px 80px;
+  background: linear-gradient(135deg, var(--espresso) 0%, #3A1A08 50%, var(--mahogany) 100%);
+  border-radius: 8px; padding: 52px 64px;
+  display: flex; align-items: center; justify-content: space-between; gap: 32px;
+  position: relative; overflow: hidden;
+  box-shadow: 0 16px 56px var(--shadow-deep);
+}
+.promo-banner::before {
+  content: ''; position: absolute;
+  width: 500px; height: 500px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(212,168,85,0.08), transparent 70%);
+  right: -100px; top: -150px; pointer-events: none;
+}
+.promo-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 38px; font-weight: 700; color: var(--parchment);
+  line-height: 1.1; margin-bottom: 10px;
+}
+.promo-title em { font-style: italic; color: var(--gold); font-weight: 400; }
+.promo-sub { font-size: 13px; color: rgba(245,237,216,0.55); line-height: 1.6; }
+.btn-promo {
+  background: linear-gradient(135deg, var(--gold), var(--amber));
+  color: var(--espresso); border: none; padding: 16px 36px; border-radius: 3px;
+  font-family: 'Jost', sans-serif; font-size: 12px; font-weight: 700;
+  letter-spacing: 0.12em; text-transform: uppercase; cursor: pointer;
+  white-space: nowrap; flex-shrink: 0; transition: all 0.3s;
+  box-shadow: 0 4px 20px rgba(212,168,85,0.4);
+}
+.btn-promo:hover { transform: translateY(-2px); box-shadow: 0 10px 32px rgba(212,168,85,0.5); }
+
+/* ── TESTIMONIALS ── */
+.testimonial-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.testimonial-card {
+  background: var(--white); border: 1px solid var(--linen); border-radius: 6px;
+  padding: 28px 24px; transition: all 0.3s; position: relative; overflow: hidden;
+}
+.testimonial-card::before {
+  content: '"'; position: absolute; top: -8px; left: 20px;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 100px; font-weight: 700; color: var(--rust); opacity: 0.07;
+  line-height: 1; pointer-events: none;
+}
+.testimonial-card:hover { transform: translateY(-4px); box-shadow: 0 16px 48px var(--shadow-warm); border-color: var(--amber); }
+.stars { color: var(--gold); font-size: 14px; letter-spacing: 2px; margin-bottom: 14px; }
+.testimonial-text {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 16px; font-style: italic; color: var(--espresso);
+  line-height: 1.65; margin-bottom: 20px; position: relative; z-index: 1;
+}
+.testimonial-author { display: flex; align-items: center; gap: 12px; }
+.author-ava {
+  width: 38px; height: 38px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; border: 2px solid var(--linen); background: var(--parchment); flex-shrink: 0;
+}
+.author-name { font-size: 13px; font-weight: 600; color: var(--espresso); }
+.author-loc { font-size: 10.5px; color: rgba(46,26,14,0.45); margin-top: 1px; }
+
+/* ── NEWSLETTER ── */
+.newsletter {
+  background: var(--parchment); border-top: 1px solid var(--linen);
+  border-bottom: 1px solid var(--linen); padding: 80px 48px; text-align: center;
+  position: relative; overflow: hidden;
+}
+.newsletter::before {
+  content: ''; position: absolute; inset: 0;
+  background: radial-gradient(ellipse at center, rgba(168,75,34,0.06), transparent 65%);
+  pointer-events: none;
+}
+.newsletter-ornament {
+  font-family: 'Cormorant Garamond', serif; font-size: 14px;
+  letter-spacing: 0.4em; color: var(--amber); opacity: 0.5; margin-bottom: 24px;
+}
+.newsletter-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 52px; font-weight: 700; color: var(--espresso); line-height: 1; margin-bottom: 12px;
+}
+.newsletter-title em { font-style: italic; color: var(--rust); font-weight: 400; }
+.newsletter-sub { font-size: 13px; color: rgba(46,26,14,0.55); margin-bottom: 36px; line-height: 1.65; }
+.newsletter-form {
+  display: flex; gap: 0; max-width: 440px; margin: 0 auto;
+  border: 1.5px solid #D4B896; border-radius: 3px; overflow: hidden;
+  box-shadow: 0 4px 20px var(--shadow-warm);
+}
+.newsletter-input {
+  flex: 1; padding: 15px 20px; border: none; outline: none;
+  font-family: 'Jost', sans-serif; font-size: 13px;
+  background: var(--white); color: var(--ink);
+}
+.newsletter-input::placeholder { color: rgba(46,26,14,0.35); }
+.newsletter-btn {
+  background: var(--espresso); color: var(--gold); border: none; padding: 15px 28px;
+  font-family: 'Jost', sans-serif; font-size: 11px; font-weight: 700;
+  letter-spacing: 0.12em; text-transform: uppercase; cursor: pointer;
+  transition: background 0.25s; white-space: nowrap;
+}
+.newsletter-btn:hover { background: var(--rust); color: var(--parchment); }
+.newsletter-note { font-size: 10.5px; color: rgba(46,26,14,0.35); margin-top: 14px; }
+
+/* ── FOOTER ── */
+footer { background: var(--espresso); padding: 64px 48px 32px; }
+.footer-grid {
+  display: grid; grid-template-columns: 1.8fr 1fr 1fr 1fr;
+  gap: 48px; margin-bottom: 56px;
+}
+.footer-brand-logo {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 26px; font-weight: 700; color: var(--parchment); margin-bottom: 14px;
+}
+.footer-brand-text { font-size: 12px; color: rgba(245,237,216,0.38); line-height: 1.75; margin-bottom: 24px; }
+.footer-social { display: flex; gap: 10px; }
+.soc-btn {
+  width: 34px; height: 34px; border-radius: 50%;
+  border: 1px solid rgba(212,168,85,0.25);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; cursor: pointer; transition: all 0.25s; color: rgba(245,237,216,0.5);
+}
+.soc-btn:hover { background: rgba(212,168,85,0.12); border-color: rgba(212,168,85,0.5); color: var(--gold); }
+.footer-col-head {
+  font-size: 9.5px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--gold); opacity: 0.6; margin-bottom: 18px;
+}
+.footer-col a {
+  display: block; font-size: 12.5px; color: rgba(245,237,216,0.5);
+  text-decoration: none; margin-bottom: 10px; cursor: pointer; transition: color 0.2s;
+}
+.footer-col a:hover { color: var(--parchment); }
+.footer-bottom {
+  border-top: 1px solid rgba(212,168,85,0.1); padding-top: 28px;
+  display: flex; justify-content: space-between; align-items: center;
+  font-size: 11px; color: rgba(245,237,216,0.25);
+}
+.footer-bottom a { color: rgba(245,237,216,0.35); text-decoration: none; transition: color 0.2s; }
+.footer-bottom a:hover { color: var(--gold); }
+
+/* ── ORNAMENT DIVIDER ── */
+.ornament-divider {
+  text-align: center; padding: 0 48px;
+  display: flex; align-items: center; gap: 20px;
+}
+.ornament-divider::before, .ornament-divider::after {
+  content: ''; flex: 1; height: 1px;
+  background: linear-gradient(to right, transparent, var(--linen), transparent);
+}
+.ornament-divider span {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 18px; color: var(--amber); opacity: 0.5; letter-spacing: 8px;
+}
+
+/* ── MPESA MODAL ── */
+.modal-overlay {
+  display: none; position: fixed; inset: 0; z-index: 2000;
+  background: rgba(28,16,8,0.75); backdrop-filter: blur(6px);
+  align-items: center; justify-content: center;
+}
+.modal-overlay.open { display: flex; }
+.modal {
+  background: var(--white); border-radius: 12px;
+  width: 100%; max-width: 440px; margin: 20px;
+  box-shadow: 0 32px 80px rgba(0,0,0,0.4);
+  overflow: hidden; animation: popIn 0.4s cubic-bezier(0.34,1.56,0.64,1) both;
+}
+.modal-header {
+  background: #00A651; /* M-Pesa green */
+  padding: 28px 28px 24px;
+  display: flex; align-items: center; gap: 14px;
+  position: relative;
+}
+.mpesa-logo-box {
+  background: white; border-radius: 8px;
+  padding: 8px 12px;
+  display: flex; align-items: center; gap: 6px;
+  flex-shrink: 0;
+}
+.mpesa-m { font-size: 22px; font-weight: 900; color: #00A651; font-family: 'Jost', sans-serif; }
+.mpesa-pesa { font-size: 11px; font-weight: 700; color: #CC0000; font-family: 'Jost', sans-serif; letter-spacing: 0.05em; }
+.modal-header-text h3 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 22px; font-weight: 700; color: white; margin-bottom: 2px;
+}
+.modal-header-text p { font-size: 11.5px; color: rgba(255,255,255,0.8); }
+.modal-close {
+  position: absolute; top: 14px; right: 16px;
+  background: rgba(255,255,255,0.2); border: none; border-radius: 50%;
+  width: 28px; height: 28px; cursor: pointer; color: white; font-size: 16px;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.2s;
+}
+.modal-close:hover { background: rgba(255,255,255,0.35); }
+.modal-body { padding: 28px; }
+.modal-order-summary {
+  background: var(--fog); border-radius: 8px; padding: 16px;
+  margin-bottom: 22px; border: 1px solid var(--linen);
+}
+.modal-order-summary-title {
+  font-size: 9px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase;
+  color: var(--text-muted, #8A6F56); margin-bottom: 10px;
+}
+.modal-order-row {
+  display: flex; justify-content: space-between; align-items: center;
+  font-size: 13px; margin-bottom: 6px; color: var(--espresso);
+}
+.modal-order-row:last-child { margin-bottom: 0; }
+.modal-order-row.total {
+  font-weight: 700; font-size: 15px; padding-top: 10px;
+  border-top: 1px solid var(--linen); margin-top: 6px;
+  color: var(--rust);
+}
+.modal-order-row.total span:last-child {
+  font-family: 'Cormorant Garamond', serif; font-size: 20px;
+}
+.mpesa-steps { margin-bottom: 22px; }
+.mpesa-step {
+  display: flex; gap: 12px; align-items: flex-start; margin-bottom: 14px;
+}
+.mpesa-step-num {
+  width: 24px; height: 24px; border-radius: 50%;
+  background: #00A651; color: white;
+  font-size: 11px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; margin-top: 1px;
+}
+.mpesa-step-text strong { display: block; font-size: 12.5px; font-weight: 600; color: var(--espresso); margin-bottom: 2px; }
+.mpesa-step-text span { font-size: 11px; color: rgba(46,26,14,0.55); line-height: 1.5; }
+.mpesa-paybill-box {
+  background: linear-gradient(135deg, #00A651, #007A3D);
+  border-radius: 8px; padding: 16px 20px;
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 22px;
+}
+.mpesa-paybill-box .pb-label { font-size: 10px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.7); margin-bottom: 4px; }
+.mpesa-paybill-box .pb-num { font-family: 'Cormorant Garamond', serif; font-size: 30px; font-weight: 700; color: white; letter-spacing: 2px; }
+.mpesa-paybill-box .pb-copy {
+  background: rgba(255,255,255,0.2); border: none; border-radius: 6px;
+  padding: 8px 14px; color: white; font-size: 11px; font-weight: 600;
+  cursor: pointer; font-family: 'Jost', sans-serif; transition: background 0.2s;
+}
+.mpesa-paybill-box .pb-copy:hover { background: rgba(255,255,255,0.35); }
+.mpesa-phone-input {
+  margin-bottom: 18px;
+}
+.mpesa-phone-input label {
+  display: block; font-size: 11px; font-weight: 600; letter-spacing: 0.06em;
+  text-transform: uppercase; color: var(--espresso); margin-bottom: 8px;
+}
+.phone-input-wrap {
+  display: flex; border: 1.5px solid var(--linen); border-radius: 6px; overflow: hidden;
+  transition: border-color 0.2s;
+}
+.phone-input-wrap:focus-within { border-color: #00A651; }
+.phone-prefix {
+  background: var(--fog); padding: 12px 14px;
+  font-size: 13px; font-weight: 600; color: var(--espresso);
+  border-right: 1px solid var(--linen); white-space: nowrap;
+  display: flex; align-items: center; gap: 6px;
+}
+.phone-input-wrap input {
+  flex: 1; padding: 12px 14px; border: none; outline: none;
+  font-family: 'Jost', sans-serif; font-size: 14px; font-weight: 500;
+  color: var(--ink); background: var(--white);
+  letter-spacing: 1px;
+}
+.phone-input-wrap input::placeholder { color: rgba(46,26,14,0.3); font-weight: 400; letter-spacing: 0; }
+.btn-mpesa-pay {
+  width: 100%; background: #00A651; color: white; border: none;
+  padding: 16px; border-radius: 8px;
+  font-family: 'Jost', sans-serif; font-size: 14px; font-weight: 700;
+  letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer;
+  transition: all 0.25s; box-shadow: 0 4px 20px rgba(0,166,81,0.4);
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+}
+.btn-mpesa-pay:hover { background: #007A3D; transform: translateY(-1px); box-shadow: 0 8px 28px rgba(0,166,81,0.5); }
+.modal-secure { text-align: center; font-size: 10.5px; color: rgba(46,26,14,0.4); margin-top: 14px; }
+
+/* ── PAYMENT METHODS BAR ── */
+.payment-bar {
+  background: var(--parchment);
+  border-top: 1px solid var(--linen);
+  padding: 16px 48px;
+  display: flex; align-items: center; justify-content: center; gap: 12px;
+  flex-wrap: wrap;
+}
+.payment-label { font-size: 11px; font-weight: 600; color: var(--text-muted, #8A6F56); letter-spacing: 0.08em; text-transform: uppercase; }
+.payment-badge {
+  display: flex; align-items: center; gap: 6px;
+  background: white; border: 1.5px solid var(--linen);
+  border-radius: 6px; padding: 7px 14px;
+  font-size: 12px; font-weight: 700;
+  transition: all 0.2s; cursor: default;
+}
+.payment-badge.mpesa { border-color: #00A651; color: #00A651; }
+.payment-badge.mpesa:hover { background: #f0fff6; box-shadow: 0 2px 10px rgba(0,166,81,0.2); }
+.payment-badge .mpesa-dot { width: 8px; height: 8px; border-radius: 50%; background: #00A651; animation: pulse 2s infinite; }
+.payment-divider { width: 1px; height: 28px; background: var(--linen); }
+
+/* ── LOCATIONS SECTION ── */
+.locations-section {
+  background: var(--espresso);
+  padding: 72px 48px;
+  position: relative; overflow: hidden;
+}
+.locations-section::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse at 30% 50%, rgba(212,168,85,0.07), transparent 60%);
+  pointer-events: none;
+}
+.locations-head { margin-bottom: 48px; }
+.locations-head .eyebrow { color: var(--gold); opacity: 0.8; margin-bottom: 10px; }
+.locations-head h2 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 44px; font-weight: 700; color: var(--parchment); line-height: 1;
+}
+.locations-head h2 em { font-style: italic; color: var(--gold); font-weight: 400; }
+.locations-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+.location-card {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(212,168,85,0.2);
+  border-radius: 10px; padding: 32px;
+  transition: all 0.3s; position: relative; overflow: hidden;
+}
+.location-card::before {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgba(212,168,85,0.05), transparent);
+  opacity: 0; transition: opacity 0.3s;
+}
+.location-card:hover { border-color: rgba(212,168,85,0.45); transform: translateY(-4px); box-shadow: 0 20px 48px rgba(0,0,0,0.3); }
+.location-card:hover::before { opacity: 1; }
+.location-icon {
+  width: 48px; height: 48px; border-radius: 50%;
+  background: rgba(212,168,85,0.12); border: 1px solid rgba(212,168,85,0.3);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px; margin-bottom: 20px;
+}
+.location-city {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 30px; font-weight: 700; color: var(--parchment);
+  margin-bottom: 4px; line-height: 1;
+}
+.location-tag {
+  display: inline-block;
+  background: rgba(212,168,85,0.15); border: 1px solid rgba(212,168,85,0.3);
+  color: var(--gold); font-size: 9px; font-weight: 600;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  padding: 3px 10px; border-radius: 2px; margin-bottom: 20px;
+}
+.location-details { list-style: none; }
+.location-details li {
+  display: flex; align-items: flex-start; gap: 10px;
+  font-size: 13px; color: rgba(245,237,216,0.6);
+  margin-bottom: 10px; line-height: 1.5;
+}
+.location-details li .ld-icon { font-size: 15px; flex-shrink: 0; margin-top: 1px; }
+.location-details li strong { color: var(--parchment); }
+.location-map-btn {
+  margin-top: 24px;
+  display: inline-flex; align-items: center; gap: 8px;
+  background: transparent; border: 1px solid rgba(212,168,85,0.35);
+  color: var(--gold); padding: 10px 20px; border-radius: 3px;
+  font-family: 'Jost', sans-serif; font-size: 11px; font-weight: 600;
+  letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer;
+  transition: all 0.25s;
+}
+.location-map-btn:hover { background: rgba(212,168,85,0.1); border-color: var(--gold); }
+
+
+/* ── #SWAG SECTION ── */
+.swag-section {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 520px;
+  background: #0A0A0A;
+  position: relative;
+  overflow: hidden;
+}
+.swag-section::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse at 70% 50%, rgba(212,168,85,0.08), transparent 60%);
+  pointer-events: none; z-index: 1;
+}
+.swag-left {
+  position: relative; overflow: hidden;
+}
+.swag-img {
+  width: 100%; height: 100%;
+  object-fit: cover; object-position: center;
+  display: block;
+  filter: contrast(1.1) brightness(0.95);
+  transition: transform 0.6s ease;
+}
+.swag-left:hover .swag-img { transform: scale(1.04); }
+.swag-right {
+  padding: 64px 56px 64px 48px;
+  display: flex; flex-direction: column; justify-content: center;
+  position: relative; z-index: 2;
+}
+.swag-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 52px; font-weight: 900;
+  color: white; line-height: 1.05; margin-bottom: 24px;
+}
+.swag-title em {
+  font-style: italic; font-weight: 400; color: var(--gold);
+}
+.swag-text {
+  font-size: 14px; font-weight: 300;
+  color: rgba(255,255,255,0.55); line-height: 1.8;
+  margin-bottom: 16px; max-width: 380px;
+}
+.swag-tags {
+  display: flex; flex-wrap: wrap; gap: 8px;
+  margin: 24px 0 32px;
+}
+.swag-tag {
+  background: rgba(212,168,85,0.12);
+  border: 1px solid rgba(212,168,85,0.3);
+  color: var(--gold); font-size: 11px; font-weight: 600;
+  letter-spacing: 0.08em; padding: 5px 12px; border-radius: 2px;
+  cursor: pointer; transition: all 0.2s;
+}
+.swag-tag:hover { background: rgba(212,168,85,0.22); border-color: var(--gold); }
+.swag-tag:first-child {
+  background: var(--gold); color: #0A0A0A; border-color: var(--gold);
+  font-size: 13px; font-weight: 800; letter-spacing: 0.12em;
+}
+.btn-swag {
+  display: inline-flex; align-items: center; gap: 8px; width: fit-content;
+  background: white; color: #0A0A0A; border: none;
+  padding: 15px 28px; border-radius: 2px;
+  font-family: 'Jost', sans-serif; font-size: 12px; font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer;
+  transition: all 0.3s;
+  box-shadow: 0 4px 24px rgba(255,255,255,0.15);
+}
+.btn-swag:hover {
+  background: var(--gold); color: #0A0A0A;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 32px rgba(212,168,85,0.4);
+}
+
+/* ── ANIMATIONS ── */
+@keyframes fadeSlideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeSlideDown {
+  from { opacity: 0; transform: translateY(-12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes popIn {
+  0% { opacity: 0; transform: scale(0.88) translateY(10px); }
+  70% { transform: scale(1.03) translateY(-2px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+</style>
+</head>
+<body>
+
+<!-- MPESA PAYMENT MODAL -->
+<div class="modal-overlay" id="mpesaModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="mpesa-logo-box">
+        <span class="mpesa-m">M</span>
+        <span class="mpesa-pesa">PESA</span>
+      </div>
+      <div class="modal-header-text">
+        <h3>Lipa na Pochi la Biashara</h3>
+        <p>Send to Pochi · Instant &amp; Secure</p>
+      </div>
+      <button class="modal-close" onclick="document.getElementById('mpesaModal').classList.remove('open')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-order-summary">
+        <div class="modal-order-summary-title">Order Summary</div>
+        <div class="modal-order-row"><span>Subtotal</span><span id="modal-subtotal">KSh 0</span></div>
+        <div class="modal-order-row"><span>Delivery — Thika / Mombasa</span><span>KSh 250</span></div>
+        <div class="modal-order-row total"><span>Total</span><span id="modal-total">KSh 250</span></div>
+      </div>
+      <div class="mpesa-paybill-box">
+        <div>
+          <div class="pb-label">Pochi la Biashara</div>
+          <div class="pb-num">0740 504 916</div>
+        </div>
+        <button class="pb-copy" onclick="navigator.clipboard.writeText('0740504916');this.textContent='Copied ✓'">Copy</button>
+      </div>
+      <div class="mpesa-steps">
+        <div class="mpesa-step">
+          <div class="mpesa-step-num">1</div>
+          <div class="mpesa-step-text">
+            <strong>Go to M-Pesa on your phone</strong>
+            <span>Open M-Pesa → Select "Send Money" or "Lipa na M-Pesa"</span>
+          </div>
+        </div>
+        <div class="mpesa-step">
+          <div class="mpesa-step-num">2</div>
+          <div class="mpesa-step-text">
+            <strong>Select "Pochi la Biashara"</strong>
+            <span>Enter number <strong>0740 504 916</strong> — Vintage Thrift Store</span>
+          </div>
+        </div>
+        <div class="mpesa-step">
+          <div class="mpesa-step-num">3</div>
+          <div class="mpesa-step-text">
+            <strong>Or enter your number below</strong>
+            <span>We'll confirm your Pochi la Biashara payment instantly</span>
+          </div>
+        </div>
+      </div>
+      <div class="mpesa-phone-input">
+        <label>Your M-Pesa Number</label>
+        <div class="phone-input-wrap">
+          <div class="phone-prefix">🇰🇪 +254</div>
+          <input type="tel" placeholder="7XX XXX XXX" maxlength="9" id="mpesaPhone">
+        </div>
+      </div>
+      <button class="btn-mpesa-pay" onclick="handleMpesaPay()">
+        <span>💚</span> Send to Pochi — Pay Now
+      </button>
+      <p class="modal-secure">🔒 Secured by Safaricom M-Pesa · Vintage Thrift Store</p>
+    </div>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo">Vintage Thrift</a>
+  <div class="nav-links">
+    <a>Women</a><a>Men</a><a>Jackets</a><a>Dresses</a><a>Denim</a><a>Accessories</a>
+    <a class="sale">🔥 Sale</a>
+  </div>
+  <div class="nav-right">
+    <div class="nav-icon">🔍</div>
+    <div class="nav-icon">♡</div>
+    <button class="nav-cart-btn" onclick="openMpesaModal()">🛍&nbsp; Cart <span class="cart-badge">0</span></button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-left">
+    <div class="hero-tag">
+      <div class="hero-tag-dot"></div>
+      <span class="eyebrow">#SWAG — 200+ fresh pieces just landed</span>
+    </div>
+    <h1 class="hero-title">Dress with <em>#SWAG,</em> own your style</h1>
+    <p class="hero-sub">Drip in vintage, flex that #SWAG. One-of-a-kind pre-loved pieces sourced for the bold, the fearless, and the uniquely you.</p>
+    <div class="hero-ctas">
+      <button class="btn-hero-primary">Shop New Arrivals</button>
+      <button class="btn-hero-secondary">Browse All <span>→</span></button>
+    </div>
+    <div class="hero-stats">
+      <div><div class="hero-stat-num">3.1K+</div><div class="hero-stat-label">Happy customers</div></div>
+      <div><div class="hero-stat-num">700+</div><div class="hero-stat-label">Items in stock</div></div>
+      <div><div class="hero-stat-num">4.8★</div><div class="hero-stat-label">Average rating</div></div>
+    </div>
+  </div>
+
+  <div class="hero-right">
+    <div class="hero-tile">
+      <img src="https://images.unsplash.com/photo-1558171813-82ee99c2de47?w=400&h=300&fit=crop&q=80" alt="Vintage dresses" loading="lazy">
+      <div class="hero-tile-label"><strong>Dresses</strong><span>148 items</span></div>
+    </div>
+    <div class="hero-tile">
+      <img src="https://images.unsplash.com/photo-1551488831-00ddcb6c6bd3?w=400&h=300&fit=crop&q=80" alt="Vintage jackets" loading="lazy">
+      <div class="hero-tile-label"><strong>Jackets</strong><span>94 items</span></div>
+    </div>
+    <div class="hero-tile">
+      <img src="https://images.unsplash.com/photo-1542272604-787c3835535d?w=400&h=300&fit=crop&q=80" alt="Denim jeans" loading="lazy">
+      <div class="hero-tile-label"><strong>Denim</strong><span>213 items</span></div>
+    </div>
+    <div class="hero-tile">
+      <img src="https://images.unsplash.com/photo-1523381210434-271e8be1f52b?w=400&h=300&fit=crop&q=80" alt="Tops and tees" loading="lazy">
+      <div class="hero-tile-label"><strong>Tops & Tees</strong><span>327 items</span></div>
+    </div>
+    <div class="hero-overlay-card">
+      <div class="onum">200+</div>
+      <div class="olabel">Pieces added this week</div>
+    </div>
+  </div>
+</section>
+
+<!-- TRUST BAR -->
+<div class="trust-bar">
+  <div class="trust-item"><div class="trust-icon">♻️</div><div class="trust-text"><strong>Pre-loved & Sustainable</strong><span>Every piece extends its life</span></div></div>
+  <div class="trust-item"><div class="trust-icon">🚚</div><div class="trust-text"><strong>Free Shipping over $60</strong><span>Delivered in 2–4 business days</span></div></div>
+  <div class="trust-item"><div class="trust-icon">🏷</div><div class="trust-text"><strong>Prices from $8</strong><span>Vintage quality, thrift prices</span></div></div>
+  <div class="trust-item"><div class="trust-icon">↩️</div><div class="trust-text"><strong>Easy 14-Day Returns</strong><span>No questions asked</span></div></div>
+</div>
+
+<!-- PAYMENT METHODS BAR -->
+<div class="payment-bar">
+  <span class="payment-label">We accept</span>
+  <div class="payment-badge mpesa">
+    <div class="mpesa-dot"></div>
+    M-PESA
+  </div>
+  <div class="payment-divider"></div>
+  <span style="font-size:11px;color:rgba(46,26,14,0.45);font-weight:500">Lipa na Pochi la Biashara · 0740 504 916</span>
+  <div class="payment-divider"></div>
+  <span style="font-size:11px;color:rgba(46,26,14,0.45)">🇰🇪 Kenya shillings (KSh) accepted</span>
+</div>
+
+<!-- CATEGORIES -->
+<section class="section">
+  <div class="section-head">
+    <div class="section-head-left">
+      <div class="eyebrow">Explore</div>
+      <h2 class="section-title">Shop by <em>Category</em></h2>
+      <p class="section-sub">From timeless denim to rare statement pieces — browse by what you're after.</p>
+    </div>
+    <a class="link-arrow">View all categories <span class="arr">→</span></a>
+  </div>
+  <div class="cat-grid">
+    <div class="cat-card">
+      <img src="https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=300&h=400&fit=crop&q=80" alt="Dresses">
+      <div class="cat-info"><span class="cat-name">Dresses</span><span class="cat-count">148 items</span></div>
+    </div>
+    <div class="cat-card">
+      <img src="https://images.unsplash.com/photo-1548126032-079a0fb0099d?w=300&h=400&fit=crop&q=80" alt="Jackets">
+      <div class="cat-info"><span class="cat-name">Jackets &amp; Coats</span><span class="cat-count">94 items</span></div>
+    </div>
+    <div class="cat-card">
+      <img src="https://images.unsplash.com/photo-1541099649105-f69ad21f3246?w=300&h=400&fit=crop&q=80" alt="Denim">
+      <div class="cat-info"><span class="cat-name">Denim</span><span class="cat-count">213 items</span></div>
+    </div>
+    <div class="cat-card">
+      <img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=300&h=400&fit=crop&q=80" alt="Tops and Tees">
+      <div class="cat-info"><span class="cat-name">Tops &amp; Tees</span><span class="cat-count">327 items</span></div>
+    </div>
+    <div class="cat-card">
+      <img src="https://images.unsplash.com/photo-1543163521-1bf539c55dd2?w=300&h=400&fit=crop&q=80" alt="Shoes and Bags">
+      <div class="cat-info"><span class="cat-name">Shoes &amp; Bags</span><span class="cat-count">116 items</span></div>
+    </div>
+  </div>
+</section>
+
+
+<!-- #SWAG SECTION -->
+<section class="swag-section">
+  <div class="swag-left">
+    <img src="data:image/jpeg;base64,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zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzDjzzDDTzzzjDDjzjzzDjzzzTTDzzzzzzzzzzzzzzzzzzzQBzTxTyyRTjDyjhxTzzxzzzhzzzzzzzzzzzzzzzzzzzzzzQjDQDzyxzzwDyyzyDxzzjzzTzzzjzzzzzzzzzzzzzzzzzxQATRTzzwhTgDzyjyTzzzjzhTzzzjzzzzzzzzzzzzzzzzzzyhjjTzDyjzyjzhDzThTyzSzzzjyzTzzzzzzzzzzzzzzzxRRziTSwDyjTzTyxjzSjzTxSzzhzThTzzzzzzzzzzzzzzzxTzzyxygzzzDwTzzDzTzwTzyjwRzSzTzzzzzzzzzzzzzzzxTzzzxTyxTwjzDjzTxTjyTxxDwTwgDTzzzzzzzzzzzzzzzxjzjyxzzzhwDyjjzTzSjyDxQDzTzDzzzzzzzzzzzzzzzzzyiijgxzzzwijzTzzyxQTxDxQDzxTzzzzzzzzzzzzzzzzzzyyjzDzzzzyyzyyjxyhwjyDyATzRTzzzzzzzzzzzzzzzzzzhzizzSzDzyzzzzzTyjxSwjSgTzhTzzzzzzzzzzzzzzzzzyjzzzygAAjTijzyDzzzxyyzzwTyAjTzzzzzzzzzzzzzzzzyjzzzyzyzhTzzTyzzzzxTzzzxDyzxTzzzzzzzzzzzzzzzzzwTBzRBShjyjjzxhzzihzzzzxTzwzzzzzzzzzzzzzzzzzzzwAjTyxTzzzwDzxxzyTzzzzzxDzzzzzzzzzzzzzzzzzzzzzzyRQzxTzzxzxTxRTyCjyjxTyjzzzzTzzzzzzzzzzzzzzzzzTTxzxzzzizxTzRTwjzyDzTzzDzzBzzzzzzzzzzzzzzzzzzwwzTzxzTxzywxwQBTgyTwQzzjTCgTTzzzzzzzzzzzzzzzxzzzzzzzzzzzzzzzzzzzzzzzzyxzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz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" alt="#SWAG" class="swag-img">
+  </div>
+  <div class="swag-right">
+    <div class="eyebrow" style="color:var(--gold);margin-bottom:14px">Our Philosophy</div>
+    <h2 class="swag-title">Vintage is the<br><em>original</em> #SWAG</h2>
+    <p class="swag-text">Long before fast fashion, thrift was the move. Wearing vintage means refusing the ordinary — it means arriving in a look nobody else has, telling a story only you can tell.</p>
+    <p class="swag-text">At Vintage Thrift, we don't just sell clothes. We hand you a piece of history and dare you to make it yours.</p>
+    <div class="swag-tags">
+      <span class="swag-tag">#SWAG</span>
+      <span class="swag-tag">#VintageVibes</span>
+      <span class="swag-tag">#ThriftedFit</span>
+      <span class="swag-tag">#PreLoved</span>
+      <span class="swag-tag">#DrippingInVintage</span>
+    </div>
+    <button class="btn-swag">Shop the #SWAG Collection →</button>
+  </div>
+</section>
+
+<div class="ornament-divider"><span>✦ ✦ ✦</span></div>
+
+<!-- NEW ARRIVALS -->
+<section class="section">
+  <div class="section-head">
+    <div class="section-head-left">
+      <div class="eyebrow">Just Landed</div>
+      <h2 class="section-title">New <em>Arrivals</em></h2>
+      <p class="section-sub">Fresh pieces, ready for a new chapter.</p>
+    </div>
+    <a class="link-arrow">See all new in <span class="arr">→</span></a>
+  </div>
+  <div class="filter-row">
+    <button class="chip active">All</button>
+    <button class="chip">Women</button>
+    <button class="chip">Men</button>
+    <button class="chip">Tops</button>
+    <button class="chip">Dresses</button>
+    <button class="chip">Jackets</button>
+    <button class="chip">Denim</button>
+    <button class="chip">Under $30</button>
+  </div>
+  <div class="product-grid">
+
+    <!-- 1 Floral Dress -->
+    <div class="product-card">
+      <div class="product-img-zone">
+        <img src="https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?w=400&h=500&fit=crop&q=80" alt="Boho Floral Midi Dress" loading="lazy">
+        <div class="product-badge badge-new">New In</div>
+        <div class="product-wish">🤍</div>
+        <div class="product-size-tag">Size M</div>
+      </div>
+      <div class="product-body">
+        <div class="product-era">1970s · Floral</div>
+        <div class="product-name">Boho Floral Midi Dress</div>
+        <div class="product-desc">Cotton blend, flowy silhouette. Excellent condition.</div>
+        <div class="product-footer-row">
+          <div class="product-prices"><span class="price-now">KSh 1,800</span><span class="price-was">KSh 4,500</span></div>
+          <button class="btn-add">+ Add</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2 Leather Jacket -->
+    <div class="product-card">
+      <div class="product-img-zone">
+        <img src="https://images.unsplash.com/photo-1551537482-f2075a1d41f2?w=400&h=500&fit=crop&q=80" alt="Black Moto Leather Jacket" loading="lazy">
+        <div class="product-badge badge-sale">Sale</div>
+        <div class="product-wish">🤍</div>
+        <div class="product-size-tag">Size L</div>
+      </div>
+      <div class="product-body">
+        <div class="product-era">1990s · Moto</div>
+        <div class="product-name">Black Moto Leather Jacket</div>
+        <div class="product-desc">Genuine leather, silver zips. Good vintage condition.</div>
+        <div class="product-footer-row">
+          <div class="product-prices"><span class="price-now">KSh 1,950</span><span class="price-was">KSh 5,200</span></div>
+          <button class="btn-add">+ Add</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3 Jeans -->
+    <div class="product-card">
+      <div class="product-img-zone">
+        <img src="https://images.unsplash.com/photo-1475178626620-a4d074967452?w=400&h=500&fit=crop&q=80" alt="High-Waist Mom Jeans" loading="lazy">
+        <div class="product-badge badge-rare">Rare Find</div>
+        <div class="product-wish">🤍</div>
+        <div class="product-size-tag">W28</div>
+      </div>
+      <div class="product-body">
+        <div class="product-era">1980s · Levi's</div>
+        <div class="product-name">High-Waist Mom Jeans</div>
+        <div class="product-desc">Original Levi's 501. Light wash, great fade.</div>
+        <div class="product-footer-row">
+          <div class="product-prices"><span class="price-now">KSh 1,750</span><span class="price-was">KSh 4,800</span></div>
+          <button class="btn-add">+ Add</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4 Band Tee -->
+    <div class="product-card">
+      <div class="product-img-zone">
+        <img src="https://images.unsplash.com/photo-1503341504253-dff4815485f1?w=400&h=500&fit=crop&q=80" alt="Vintage Band Tee" loading="lazy">
+        <div class="product-badge badge-new">New In</div>
+        <div class="product-wish">🤍</div>
+        <div class="product-size-tag">Size S</div>
+      </div>
+      <div class="product-body">
+        <div class="product-era">1995 · Music Merch</div>
+        <div class="product-name">Vintage Band Graphic Tee</div>
+        <div class="product-desc">100% cotton, naturally distressed. Original print.</div>
+        <div class="product-footer-row">
+          <div class="product-prices"><span class="price-now">KSh 950</span><span class="price-was">KSh 2,500</span></div>
+          <button class="btn-add">+ Add</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5 Cardigan -->
+    <div class="product-card">
+      <div class="product-img-zone">
+        <img src="https://images.unsplash.com/photo-1434389677669-e08b4cac3105?w=400&h=500&fit=crop&q=80" alt="Knit Cardigan" loading="lazy">
+        <div class="product-wish">🤍</div>
+        <div class="product-size-tag">Size M</div>
+      </div>
+      <div class="product-body">
+        <div class="product-era">1960s · Knitwear</div>
+        <div class="product-name">Sage Green Knit Cardigan</div>
+        <div class="product-desc">Wool blend, pearl buttons. Near-perfect condition.</div>
+        <div class="product-footer-row">
+          <div class="product-prices"><span class="price-now">KSh 1,200</span><span class="price-was">KSh 3,200</span></div>
+          <button class="btn-add">+ Add</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6 Boots -->
+    <div class="product-card">
+      <div class="product-img-zone">
+        <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&h=500&fit=crop&q=80" alt="Platform Boots" loading="lazy">
+        <div class="product-badge badge-sale">Sale</div>
+        <div class="product-wish">🤍</div>
+        <div class="product-size-tag">EU 38</div>
+      </div>
+      <div class="product-body">
+        <div class="product-era">1970s · Footwear</div>
+        <div class="product-name">Brown Platform Boots</div>
+        <div class="product-desc">Faux suede, block heel. Minor sole wear only.</div>
+        <div class="product-footer-row">
+          <div class="product-prices"><span class="price-now">KSh 1,500</span><span class="price-was">KSh 3,800</span></div>
+          <button class="btn-add">+ Add</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 7 Blazer -->
+    <div class="product-card">
+      <div class="product-img-zone">
+        <img src="https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=400&h=500&fit=crop&q=80" alt="Corduroy Blazer" loading="lazy">
+        <div class="product-wish">🤍</div>
+        <div class="product-size-tag">Size XL</div>
+      </div>
+      <div class="product-body">
+        <div class="product-era">1980s · Academic</div>
+        <div class="product-name">Brown Corduroy Blazer</div>
+        <div class="product-desc">Elbow patches, fully lined. Excellent vintage.</div>
+        <div class="product-footer-row">
+          <div class="product-prices"><span class="price-now">KSh 1,650</span><span class="price-was">KSh 4,200</span></div>
+          <button class="btn-add">+ Add</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 8 Slip Dress -->
+    <div class="product-card">
+      <div class="product-img-zone">
+        <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=400&h=500&fit=crop&q=80" alt="Silk Slip Dress" loading="lazy">
+        <div class="product-badge badge-rare">Rare Find</div>
+        <div class="product-wish">🤍</div>
+        <div class="product-size-tag">Size S</div>
+      </div>
+      <div class="product-body">
+        <div class="product-era">1990s · Slip Style</div>
+        <div class="product-name">Silk Slip Dress — Blush</div>
+        <div class="product-desc">Real silk, bias cut. Barely worn, stunning drape.</div>
+        <div class="product-footer-row">
+          <div class="product-prices"><span class="price-now">KSh 2,000</span><span class="price-was">KSh 6,000</span></div>
+          <button class="btn-add">+ Add</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- PROMO BANNER -->
+<div class="promo-banner">
+  <div>
+    <div class="eyebrow" style="margin-bottom:10px">Weekend Special</div>
+    <div class="promo-title">Buy 3, save <em>20%</em></div>
+    <p class="promo-sub">Add any 3 items to your cart and the discount applies automatically. No code needed — just good taste.</p>
+  </div>
+  <button class="btn-promo">Shop the Deal →</button>
+</div>
+
+<!-- TESTIMONIALS -->
+<section class="section section-alt">
+  <div class="section-head">
+    <div class="section-head-left">
+      <div class="eyebrow">Reviews</div>
+      <h2 class="section-title">Happy <em>shoppers</em></h2>
+      <p class="section-sub">Real people, real vintage finds.</p>
+    </div>
+    <a class="link-arrow">All reviews <span class="arr">→</span></a>
+  </div>
+  <div class="testimonial-grid">
+    <div class="testimonial-card">
+      <div class="stars">★★★★★</div>
+      <p class="testimonial-text">"Found the most perfect 70s floral dress. It fits like it was made for me — I get compliments every single time."</p>
+      <div class="testimonial-author">
+        <div class="author-ava">🌸</div>
+        <div><div class="author-name">Amara T.</div><div class="author-loc">Nairobi, KE</div></div>
+      </div>
+    </div>
+    <div class="testimonial-card">
+      <div class="stars">★★★★★</div>
+      <p class="testimonial-text">"The Levi's jeans arrived beautifully packaged. Condition was exactly as described — better, actually."</p>
+      <div class="testimonial-author">
+        <div class="author-ava">😎</div>
+        <div><div class="author-name">Marcus O.</div><div class="author-loc">Lagos, NG</div></div>
+      </div>
+    </div>
+    <div class="testimonial-card">
+      <div class="stars">★★★★★</div>
+      <p class="testimonial-text">"Honestly shocked by the quality. Vintage Thrift is the only place I shop for clothes now. So affordable and unique."</p>
+      <div class="testimonial-author">
+        <div class="author-ava">✨</div>
+        <div><div class="author-name">Zoe K.</div><div class="author-loc">Cape Town, ZA</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LOCATIONS -->
+<div class="locations-section">
+  <div class="locations-head">
+    <div class="eyebrow">Our Stores</div>
+    <h2>Find us in <em>Kenya</em></h2>
+  </div>
+  <div class="locations-grid">
+    <!-- Thika -->
+    <div class="location-card">
+      <div class="location-icon">📍</div>
+      <div class="location-city">Thika</div>
+      <div class="location-tag">Main Branch</div>
+      <ul class="location-details">
+        <li><span class="ld-icon">🏬</span><span><strong>Vintage Thrift Store Thika</strong><br>Thika Town Centre, Commercial St.<br>Opposite Thika Arcade, Ground Floor</span></li>
+        <li><span class="ld-icon">🕐</span><span>Mon – Sat: 9:00am – 7:00pm<br>Sun: 11:00am – 5:00pm</span></li>
+        <li><span class="ld-icon">📞</span><span>+254 712 345 678</span></li>
+        <li><span class="ld-icon">💚</span><span>Pochi la Biashara · 0740 504 916</span></li>
+      </ul>
+      <button class="location-map-btn">📍 View on Google Maps →</button>
+    </div>
+    <!-- Mombasa -->
+    <div class="location-card">
+      <div class="location-icon">🌊</div>
+      <div class="location-city">Mombasa</div>
+      <div class="location-tag">Coast Branch</div>
+      <ul class="location-details">
+        <li><span class="ld-icon">🏬</span><span><strong>Vintage Thrift Store Mombasa</strong><br>Moi Avenue, Mombasa CBD<br>Near Old Town, 1st Floor Suite 4</span></li>
+        <li><span class="ld-icon">🕐</span><span>Mon – Sat: 9:00am – 8:00pm<br>Sun: 10:00am – 6:00pm</span></li>
+        <li><span class="ld-icon">📞</span><span>+254 723 456 789</span></li>
+        <li><span class="ld-icon">💚</span><span>Pochi la Biashara · 0740 504 916</span></li>
+      </ul>
+      <button class="location-map-btn">📍 View on Google Maps →</button>
+    </div>
+  </div>
+</div>
+
+<!-- NEWSLETTER -->
+<div class="newsletter">
+  <div class="newsletter-ornament">✦ &nbsp;&nbsp; ✦ &nbsp;&nbsp; ✦</div>
+  <h2 class="newsletter-title">Get <em>#SWAG</em> drops first</h2>
+  <p class="newsletter-sub">Join 8,000+ #SWAG believers — first dibs on fresh drops, exclusive deals,<br>and vintage finds that hit different. Plus 10% off your first order.</p>
+  <div class="newsletter-form">
+    <input class="newsletter-input" type="email" placeholder="your@email.com">
+    <button class="newsletter-btn">Join the List</button>
+  </div>
+  <p class="newsletter-note">No spam, ever. Unsubscribe anytime.</p>
+</div>
+
+<footer>
+  <div class="footer-grid">
+    <div>
+      <div class="footer-brand-logo">Vintage Thrift</div>
+      <p class="footer-brand-text">Pre-loved clothing with serious #SWAG. Sustainably sourced, carefully curated, and lovingly packed for you.<br><br>📍 Thika Town Centre &amp; Mombasa Moi Avenue</p>
+      <div style="margin-bottom:16px">
+        <div style="font-size:9.5px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);opacity:0.6;margin-bottom:12px">Follow Us</div>
+        <div class="footer-social">
+          <a class="soc-btn" href="https://www.instagram.com/vintagethriftstore" target="_blank" title="@vintagethriftstore on Instagram" style="text-decoration:none;font-size:18px">📸</a>
+          <a class="soc-btn" href="https://www.tiktok.com/@vintagethriftstore" target="_blank" title="@vintagethriftstore on TikTok" style="text-decoration:none;font-size:18px">🎵</a>
+          <a class="soc-btn" href="https://www.facebook.com/vintagethriftstore" target="_blank" title="Vintage Thrift Store on Facebook" style="text-decoration:none;font-size:18px">👍</a>
+          <a class="soc-btn" href="https://wa.me/254712345678" target="_blank" title="WhatsApp Us" style="text-decoration:none;font-size:18px">💬</a>
+        </div>
+        <div style="margin-top:10px">
+          <div style="font-size:10px;color:rgba(245,237,216,0.35);margin-bottom:3px">📸 Instagram &amp; TikTok</div>
+          <div style="font-size:11px;color:var(--gold);opacity:0.7;font-weight:600;letter-spacing:0.04em">@vintagethriftstore</div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;background:rgba(0,166,81,0.12);border:1px solid rgba(0,166,81,0.3);border-radius:6px;padding:10px 14px;width:fit-content">
+        <span style="font-size:15px">💚</span>
+        <div>
+          <div style="font-size:9px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:rgba(245,237,216,0.5)">Pay via</div>
+          <div style="font-size:13px;font-weight:700;color:#4AE080;letter-spacing:0.05em">Pochi la Biashara · 0740 504 916</div>
+        </div>
+      </div>
+    </div>
+    <div class="footer-col">
+      <div class="footer-col-head">Shop</div>
+      <a>Women's</a><a>Men's</a><a>New Arrivals</a><a>On Sale</a><a>Gift Cards</a>
+    </div>
+    <div class="footer-col">
+      <div class="footer-col-head">Our Stores</div>
+      <a>📍 Thika — Commercial St.</a>
+      <a>🌊 Mombasa — Moi Avenue</a>
+      <a>Opening Hours</a>
+      <a>Get Directions</a>
+      <a>Contact Us</a>
+    </div>
+    <div class="footer-col">
+      <div class="footer-col-head">Help</div>
+      <a>Sizing Guide</a><a>Shipping Info</a><a>Returns</a><a>FAQ</a>
+      <div class="footer-col-head" style="margin-top:16px">About</div>
+      <a>Our Story</a><a>Sell With Us</a><a>Sustainability</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2025 Vintage Thrift Store. Thika &amp; Mombasa, Kenya 🇰🇪</span>
+    <div style="display:flex;gap:20px">
+      <a>Privacy Policy</a><a>Terms of Service</a><a>Cookie Settings</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ── KSh exchange rate (approx 1 USD = 130 KSh) ──
+let cartItems = [];
+let cartCount = 0;
+
+// Product prices in USD (matches order of .btn-add buttons)
+const productPrices = [1800, 1950, 1750, 950, 1200, 1500, 1650, 2000];
+const productNames  = [
+  'Boho Floral Midi Dress','Black Moto Leather Jacket','High-Waist Mom Jeans',
+  'Vintage Band Graphic Tee','Sage Green Knit Cardigan','Brown Platform Boots',
+  'Brown Corduroy Blazer','Silk Slip Dress — Blush'
+];
+
+// Filter chips
+document.querySelectorAll('.chip').forEach(chip => {
+  chip.addEventListener('click', () => {
+    document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+    chip.classList.add('active');
+  });
+});
+
+// Wishlist toggle
+document.querySelectorAll('.product-wish').forEach(btn => {
+  btn.addEventListener('click', e => {
+    e.stopPropagation();
+    btn.textContent = btn.textContent === '🤍' ? '❤️' : '🤍';
+  });
+});
+
+// Cart counter + price tracking
+document.querySelectorAll('.btn-add').forEach((btn, i) => {
+  btn.addEventListener('click', () => {
+    cartCount++;
+    cartItems.push({ name: productNames[i], price: productPrices[i] });
+    document.querySelectorAll('.cart-badge').forEach(b => b.textContent = cartCount);
+    const orig = btn.textContent;
+    btn.textContent = '✓ Added';
+    btn.style.background = '#7A8C6A';
+    setTimeout(() => { btn.textContent = orig; btn.style.background = ''; }, 1400);
+  });
+});
+
+// Open M-Pesa Modal
+function openMpesaModal() {
+  const subtotalKSH = cartItems.reduce((s, i) => s + i.price, 0);
+  const deliveryKSH = 250;
+  const totalKSH = subtotalKSH + deliveryKSH;
+  document.getElementById('modal-subtotal').textContent = 'KSh ' + subtotalKSH.toLocaleString();
+  document.getElementById('modal-total').textContent    = 'KSh ' + totalKSH.toLocaleString();
+  document.getElementById('mpesaModal').classList.add('open');
+}
+
+// Close on overlay click
+document.getElementById('mpesaModal').addEventListener('click', function(e) {
+  if (e.target === this) this.classList.remove('open');
+});
+
+// STK Push simulation
+function handleMpesaPay() {
+  const phone = document.getElementById('mpesaPhone').value.trim();
+  if (phone.length < 9) {
+    alert('Please enter a valid M-Pesa number (e.g. 712 345 678)');
+    return;
+  }
+  const btn = document.querySelector('.btn-mpesa-pay');
+  btn.textContent = '⏳ Sending STK Push…';
+  btn.style.background = '#007A3D';
+  setTimeout(() => {
+    btn.innerHTML = '✅ Check Your Phone!';
+    btn.style.background = '#005A2D';
+    setTimeout(() => {
+      document.getElementById('mpesaModal').classList.remove('open');
+      btn.innerHTML = '<span>💚</span> Send to Pochi — Pay Now';
+      btn.style.background = '';
+    }, 2500);
+  }, 2000);
+}
+</script>
+</body>
+</html>
